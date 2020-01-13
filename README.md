@@ -5,13 +5,15 @@
 ---
 **Установка**
 
-На компьюте должен быть установлен docker и docker-composer
+На компьюте должен быть установлен docker и docker-composer, git
 
 **Установка (инициализация) приложения**
 
-``chmod +x init.sh``
+* ``git clone https://github.com/dcroid/hacker_news``
 
-``./init.sh`` 
+* ``chmod +x init.sh``
+
+* ``./init.sh`` 
 
 
 **Запуск приложения**
