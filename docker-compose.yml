@@ -1,0 +1,55 @@
+version: '3.1'
+
+services:
+  redis:
+    container_name: hacker_news_redis
+    image: redis:4-alpine
+    env_file:
+      - .env
+    volumes:
+      - redisdata:/var/lib/redis
+  mysql:
+    image: mariadb
+    container_name: hacker_news_db
+    volumes:
+      - db-data:/var/lib/mysql
+    env_file:
+      - .env
+    ports:
+      - "8306:3306"
+  web:
+    build: .
+    container_name: hacker_news_app
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - redis
+
+  celery:
+    build: .
+    container_name: hacker_news_celery
+    command: celery -A hacker_news worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+      - redis
+
+  celery-beat:
+    build: .
+    container_name: hacker_news_celery_beat
+    command: celery -A hacker_news beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+      - redis
+
+
+volumes:
+    db-data:
+    redisdata:
